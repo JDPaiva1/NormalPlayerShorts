@@ -1,0 +1,13 @@
+{
+  "name": "Normal Player Shorts",
+  "description": "Watch Youtube shorts as regular videos",
+  "version": "0.1",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": [ "https://*.youtube.com/*" ],
+      "run_at": "document_start",
+      "js": [ "main.js" ]
+    }
+  ]
+}

@@ -3,6 +3,15 @@
   "description": "Watch Youtube shorts as regular videos",
   "version": "0.1",
   "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.youtube.com/*"
+  ],
   "content_scripts": [
     {
       "matches": [ "https://*.youtube.com/*" ],

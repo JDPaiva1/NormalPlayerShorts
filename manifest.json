@@ -1,7 +1,7 @@
 {
   "name": "Normal Player Shorts",
   "description": "Watch Youtube shorts as regular videos",
-  "version": "0.1",
+  "version": "0.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -14,9 +14,13 @@
   ],
   "content_scripts": [
     {
-      "matches": [ "https://*.youtube.com/*" ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ],
       "run_at": "document_start",
-      "js": [ "main.js" ]
+      "js": [
+        "main.js"
+      ]
     }
   ]
 }

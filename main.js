@@ -5,67 +5,30 @@ if (url.match("/shorts/")) {
   window.location.replace(url);
 }
 
-const shortsMarkerSelector =
-  '[is-shorts], ytd-reel-shelf-renderer, ytd-shorts-lockup-view-model, a[href*="/shorts/"]';
+const injectedStyleId = "normal-player-shorts-hide-style";
 
-const shortsContainerSelector =
-  "ytd-rich-section-renderer, ytd-rich-item-renderer, ytd-grid-video-renderer, ytd-video-renderer, ytd-compact-video-renderer, ytd-reel-shelf-renderer, ytd-reel-item-renderer";
-
-function hideShortsElement(element) {
-  const container = element.closest(shortsContainerSelector);
-
-  if (container instanceof HTMLElement) {
-    container.style.setProperty("display", "none", "important");
+function injectHideShortsStyle() {
+  if (document.getElementById(injectedStyleId)) {
     return;
   }
 
-  if (element instanceof HTMLElement && element.hasAttribute("is-shorts")) {
-    element.style.setProperty("display", "none", "important");
-  }
+  const style = document.createElement("style");
+  style.id = injectedStyleId;
+  style.textContent = `
+    ytd-guide-entry-renderer[is-primary]:has(a[title="Shorts"]),
+    ytd-mini-guide-entry-renderer:has(a[title="Shorts"]),
+    ytd-reel-shelf-renderer,
+    ytd-reel-item-renderer,
+    ytd-rich-section-renderer:has([is-shorts]),
+    ytd-rich-item-renderer:has([is-shorts], ytd-shorts-lockup-view-model, a[href*="/shorts/"]),
+    ytd-grid-video-renderer:has([is-shorts], ytd-shorts-lockup-view-model, a[href*="/shorts/"]),
+    ytd-video-renderer:has([is-shorts], ytd-shorts-lockup-view-model, a[href*="/shorts/"]),
+    ytd-compact-video-renderer:has([is-shorts], ytd-shorts-lockup-view-model, a[href*="/shorts/"]) {
+      display: none !important;
+    }
+  `;
+
+  document.documentElement.append(style);
 }
 
-function hideShortsIn(root) {
-  if (!(root instanceof Element) && root !== document) {
-    return;
-  }
-
-  if (root instanceof Element && root.matches(shortsMarkerSelector)) {
-    hideShortsElement(root);
-  }
-
-  root.querySelectorAll(shortsMarkerSelector).forEach(hideShortsElement);
-}
-
-function hideInitialShortsUi() {
-  hideShortsIn(document);
-}
-
-function handleMutations(mutations) {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (!(node instanceof Element)) {
-        return;
-      }
-
-      if (
-        node.matches(shortsMarkerSelector) ||
-        node.querySelector(shortsMarkerSelector)
-      ) {
-        hideShortsIn(node);
-      }
-    });
-  });
-}
-
-const observer = new MutationObserver(handleMutations);
-
-observer.observe(document.documentElement, {
-  childList: true,
-  subtree: true,
-});
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", hideInitialShortsUi);
-} else {
-  hideInitialShortsUi();
-}
+injectHideShortsStyle();
